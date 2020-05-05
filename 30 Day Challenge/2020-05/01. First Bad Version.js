@@ -21,6 +21,27 @@
  * Solution:
  * Time Complexity: O(log(n))
  * Space Complexity: O(1)
+ *
+ * Explanation:
+ * We always return left pointer because
+ * 1. Solution will always be between left pointer (L) and right pointer (R)
+ * 2. Algorithm can be broken to 2 scenarios:
+ *
+ * Scenario 1:
+ *   L
+ *  [M][ ]
+ *      R
+ * In this scenario, if middle pointer (M) is a BadVersion, then R gets moved to
+ * left of M and out of bounds, leaving L pointing to the correct version. On
+ * the other hand, if M is not the bad version, L gets the right of M, which
+ * leads to scenario 2.
+ *
+ * Scenario 2
+ *   L
+ *  [M]
+ *   R
+ * In this scenario, M points to the first BadVersion so R will moved to the
+ * right of M and out of bounds, leaving L pointing to the correct version.
  */
 
 /**
@@ -45,20 +66,18 @@ var solution = function (isBadVersion) {
   return function (n) {
     let left = 1
     let right = n
-    let ver = Math.floor((right - left) / 2) + left
-    let firstBadVer = Infinity
+    let mid = Math.floor((right - left) / 2) + left
 
     while (left <= right) {
-      if (isBadVersion(ver)) {
-        if (ver < firstBadVer) firstBadVer = ver
-        right = ver - 1
+      if (isBadVersion(mid)) {
+        right = mid - 1
       } else {
-        left = ver + 1
+        left = mid + 1
       }
 
-      ver = Math.floor((right - left) / 2) + left
+      mid = Math.floor((right - left) / 2) + left
     }
 
-    return firstBadVer
+    return left
   }
 }
